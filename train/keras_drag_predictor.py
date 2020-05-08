@@ -13,7 +13,7 @@ from keras.layers.convolutional import ZeroPadding2D
 from keras import backend as K
 
 # vtm dataset maker
-from vtm_data import VTK_data
+from train.vtm_data import VTK_data
 
 # numpy and matplot lib
 import numpy as np

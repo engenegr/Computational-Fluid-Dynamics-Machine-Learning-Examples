@@ -13,7 +13,7 @@ class VTK_data:
     self.base_dir = base_dir
 
     # lists to store the datasets
-    self.geometries    = []
+    self.geometries = []
     self.steady_flows = []
     self.drag_vectors = []
 
@@ -50,11 +50,11 @@ class VTK_data:
       data = reader.GetOutput()
       data_iterator = data.NewIterator()
       img_data = data_iterator.GetCurrentDataObject() 
-      img_data.Update()
+      #img_data.UpdateTime()
       point_data = img_data.GetPointData()
       array_data = point_data.GetArray(0)
       np_array = vtk_to_numpy(array_data)
-      img_shape = img_data.GetWholeExtent()
+      img_shape = img_data.GetExtent()
       np_shape = [img_shape[3] - img_shape[2] + 1, img_shape[1] - img_shape[0] + 1, 1]
       geometry_array = np_array.reshape(np_shape)
       if np.isnan(geometry_array).any():
@@ -67,13 +67,13 @@ class VTK_data:
       data = reader.GetOutput()
       data_iterator = data.NewIterator()
       img_data = data_iterator.GetCurrentDataObject() 
-      img_data.Update()
+      #img_data.Update()
       point_data = img_data.GetPointData()
       velocity_array_data = point_data.GetArray(0)
       pressure_array_data = point_data.GetArray(1)
       velocity_np_array = vtk_to_numpy(velocity_array_data)
       pressure_np_array = vtk_to_numpy(pressure_array_data)
-      img_shape = img_data.GetWholeExtent()
+      img_shape = img_data.GetExtent()
       velocity_np_shape = [img_shape[3] - img_shape[2] + 1, img_shape[1] - img_shape[0] + 1, 2]
       pressure_np_shape = [img_shape[3] - img_shape[2] + 1, img_shape[1] - img_shape[0] + 1, 1]
       velocity_np_array = velocity_np_array.reshape(velocity_np_shape)
@@ -86,7 +86,7 @@ class VTK_data:
       reader = open(drag_vector_file, "r")
       drag_values = reader.readlines()
       drag_array = np.zeros((len(drag_values)))
-      for i in xrange(len(drag_values)):
+      for i in range(0, len(drag_values)):
         values = drag_values[i].split(' ')
         drag_array[i] = float(values[1])
       if np.isnan(drag_array).any():
@@ -102,7 +102,7 @@ class VTK_data:
   def minibatch(self, train=True, batch_size=32, batch_type="flow"):
     batch_boundary = []
     batch_data = []
-    for i in xrange(batch_size): 
+    for i in range(0, batch_size):
       if train:
         sample = np.random.randint(0, self.split_line)
       else:
@@ -119,11 +119,10 @@ batch_size = 5
 dataset = VTK_data("../data")
 dataset.load_data()
 batch_boundary, batch_data = dataset.minibatch(batch_size=batch_size, batch_type="flow")
-for i in xrange(batch_size):
+for i in range(0, batch_size):
   plt.imshow(batch_boundary[i][:,:,0])
   plt.show()
   plt.imshow(batch_data[i][:,:,0])
   #plt.plot(batch_data[i])
   plt.show()
-
 """

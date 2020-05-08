@@ -26,12 +26,12 @@ def worker():
       simulation_queue.task_done()
 
 # make thread
-for i in xrange(10):
+for i in range(0, 10):
   t = Thread(target=worker)
   t.daemon = True
   t.start()
 # create xml file and run simulation
-for i in tqdm(xrange(num_runs)):
+for i in tqdm(range(0, num_runs)):
   # make random pos and radius for circle
   rand_x = np.random.uniform(0.20, 1.0)
   rand_radius = np.random.uniform(0.05, 0.15)
